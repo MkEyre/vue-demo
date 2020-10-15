@@ -14,6 +14,8 @@
       </div>
     </div>
     <van-cell-group>
+      <van-cell title="首页" is-link @click="$router.push('/home')" />
+
       <van-cell
         title="我的关注"
         is-link
