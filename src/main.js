@@ -55,16 +55,16 @@ axios.interceptors.request.use(config => {
   return config
 })
 //设置响应拦截器
-axios.interceptors.response.use(res => {
-  const { statusCode, message } = res.data
-  if (statusCode === 401 && message === '用户信息验证失败') {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user_id')
-    Toast.fail('token失效了')
-    router.push('/login')
-  }
-  return res
-})
+// axios.interceptors.response.use(res => {
+//   const { statusCode, message } = res.data
+//   if (statusCode === 401 && message === '用户信息验证失败') {
+//     localStorage.removeItem('token')
+//     localStorage.removeItem('user_id')
+//     Toast.fail('token失效了')
+//     router.push('/login')
+//   }
+//   return res
+// })
 new Vue({
   router,
   render: h => h(App),

@@ -12,7 +12,7 @@ import Home from '../pages/Home.vue'
 
 const router = new VueRouter({
   routes: [
-    { path: '/', redirect: '/login' },
+    { path: '/', redirect: '/home' },
     { path: '/login', name: '/login', component: Login },
     { path: '/register', name: '/register', component: Register },
     { path: '/user', name: '/user', component: User },
@@ -25,7 +25,8 @@ const router = new VueRouter({
 })
 // 设置全局前置守卫
 router.beforeEach((to, from, next) => {
-  if (to.path === '/user' || to.path === '/edit') {
+  const url = ['/user', '/edit', '/myfollow', '/comments', '/my-star', '/home']
+  if (url.includes(to.path)) {
     const token = localStorage.getItem('token')
     if (token) {
       next()
