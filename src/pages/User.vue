@@ -26,7 +26,12 @@
         @click="$router.push('/comments')"
         value="跟帖/回复"
       />
-      <van-cell title="我的收藏" is-link value="文档/视频" />
+      <van-cell
+        title="我的收藏"
+        is-link
+        @click="$router.push('/my-star')"
+        value="文档/视频"
+      />
       <van-cell title="设置" is-link @click="$router.push('/edit')" />
       <van-cell title="退出" is-link @click="logout" />
     </van-cell-group>

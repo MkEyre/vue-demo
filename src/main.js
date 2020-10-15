@@ -38,10 +38,12 @@ import router from './router/index'
 import DemoHeader from './components/DemoHeader.vue'
 import DemoLogo from './components/DemoLogo.vue'
 import DemoButton from './components/DemoButton.vue'
+import DemoPost from './components/DemoPost.vue'
 
 Vue.component('demo-header', DemoHeader)
 Vue.component('demo-logo', DemoLogo)
 Vue.component('demo-button', DemoButton)
+Vue.component('demo-post', DemoPost)
 
 //请求拦截器
 axios.interceptors.request.use(config => {

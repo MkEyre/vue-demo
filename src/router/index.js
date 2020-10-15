@@ -7,6 +7,7 @@ import User from '../pages/User.vue'
 import Edit from '../pages/Edit.vue'
 import Myfollow from '../pages/Myfollow.vue'
 import Comments from '../pages/Comments.vue'
+import MyStar from '../pages/MyStar.vue'
 
 const router = new VueRouter({
   routes: [
@@ -17,6 +18,7 @@ const router = new VueRouter({
     { path: '/edit', name: '/edit', component: Edit },
     { path: '/myfollow', name: '/myfollow', component: Myfollow },
     { path: '/comments', name: '/comments', component: Comments },
+    { path: '/my-star', name: '/my-star', component: MyStar },
   ],
 })
 // 设置全局前置守卫
