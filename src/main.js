@@ -18,6 +18,7 @@ import {
   Tab,
   Tabs,
   PullRefresh,
+  Sticky,
 } from 'vant'
 Vue.use(Field, Toast)
 Vue.use(Cell)
@@ -30,6 +31,7 @@ Vue.use(List)
 Vue.use(Tab)
 Vue.use(Tabs)
 Vue.use(PullRefresh)
+Vue.use(Sticky)
 
 // 注册全局过滤器
 Vue.filter('time', (val, str) => {

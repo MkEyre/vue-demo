@@ -5,10 +5,17 @@
       <div class="center">
         <i class="iconfont iconsearch"></i> <span>搜索新闻</span>
       </div>
-      <div class="right">
+      <div class="right" @click="hasLogin">
         <i class="iconfont iconwode"></i>
       </div>
     </div>
+    <!-- tab栏右侧小三角部分 -->
+    <van-sticky z-index="999">
+      <div class="trigle" @click="unknown">
+        <i class="iconfont iconjiantou1"></i>
+      </div>
+    </van-sticky>
+
     <!-- tab栏部分 -->
     <van-tabs v-model="active" sticky>
       <van-tab :title="tab.name" v-for="tab in tabsList" :key="tab.id">
@@ -28,6 +35,7 @@
               v-for="post in postsList"
               :key="post.id"
               :post="post"
+              @click.native="$router.push(`/detail/${post.id}`)"
             ></demo-post>
           </van-list>
         </van-pull-refresh>
@@ -96,6 +104,19 @@ export default {
       this.pageIndex = 1;
       this.getPostsList(this.tabsList[this.active].id);
     },
+    // 点击小三角触发的事件
+    unknown() {
+      console.log("还不知道跳转到哪里");
+    },
+    // 点击我的触发的事件
+    hasLogin() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        this.$router.push("/login");
+      } else {
+        this.$router.push("/user");
+      }
+    },
   },
 
   // 监听active
@@ -114,6 +135,18 @@ export default {
 <style lang="less" scoped>
 /deep/.van-tabs__nav {
   background-color: #eee;
+  margin-right: 40px;
+}
+// 右侧小三角部分
+.trigle {
+  position: absolute;
+  right: 0;
+  background-color: #eee;
+  width: 40px;
+  height: 44px;
+  text-align: center;
+  line-height: 44px;
+  z-index: 999;
 }
 .homeHead {
   height: 40px;

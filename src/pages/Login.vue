@@ -90,7 +90,12 @@ export default {
               localStorage.setItem("token", data.token);
               localStorage.setItem("user_id", data.user.id);
               this.$toast.success(message);
-              this.$router.push("/user");
+
+              if (!this.$route.params.back) {
+                this.$router.push("/user");
+              } else {
+                this.$router.back();
+              }
             } else {
               this.$toast.fail(message);
             }
