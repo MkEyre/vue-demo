@@ -15,6 +15,9 @@ import {
   Radio,
   Uploader,
   List,
+  Tab,
+  Tabs,
+  PullRefresh,
 } from 'vant'
 Vue.use(Field, Toast)
 Vue.use(Cell)
@@ -24,6 +27,9 @@ Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(Uploader)
 Vue.use(List)
+Vue.use(Tab)
+Vue.use(Tabs)
+Vue.use(PullRefresh)
 
 // 注册全局过滤器
 Vue.filter('time', (val, str) => {

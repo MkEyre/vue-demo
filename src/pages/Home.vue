@@ -9,14 +9,112 @@
         <i class="iconfont iconwode"></i>
       </div>
     </div>
+    <!-- tab栏部分 -->
+    <van-tabs v-model="active" sticky>
+      <van-tab :title="tab.name" v-for="tab in tabsList" :key="tab.id">
+        <!-- 下拉刷新 -->
+        <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+          <!-- 分页 -->
+          <van-list
+            v-model="loading"
+            @load="onload"
+            :immediate-check="false"
+            :finished="finished"
+            finished-text="加载完了……"
+            offset="10"
+          >
+            <!-- demo-post组件 -->
+            <demo-post
+              v-for="post in postsList"
+              :key="post.id"
+              :post="post"
+            ></demo-post>
+          </van-list>
+        </van-pull-refresh>
+      </van-tab>
+    </van-tabs>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      active: 1,
+      tabsList: [],
+      postsList: [],
+      loading: false,
+      pageIndex: 1,
+      pageSize: 5,
+      finished: false,
+      isLoading: false,
+    };
+  },
+  created() {
+    this.getTabsList();
+  },
+  methods: {
+    //获取tab栏列表
+    async getTabsList() {
+      const res = await this.$axios.get("/category");
+      console.log(res);
+      if (res.data.statusCode === 200) {
+        this.tabsList = res.data.data;
+        this.getPostsList(this.tabsList[this.active].id);
+      }
+    },
+    // 获取文章列表
+    async getPostsList(id) {
+      const res = await this.$axios.get("/post", {
+        params: {
+          category: id,
+          pageIndex: this.pageIndex,
+          pageSize: this.pageSize,
+        },
+      });
+
+      if (res.data.statusCode === 200) {
+        this.loading = false;
+        this.isLoading = false;
+        this.postsList = [...this.postsList, ...res.data.data];
+        if (res.data.data.length < this.pageSize) {
+          this.finished = true;
+        }
+      }
+    },
+    // 触底事件
+    onload() {
+      this.pageIndex++;
+      this.getPostsList(this.tabsList[this.active].id);
+    },
+    //下拉刷新事件
+    onRefresh() {
+      // console.log(111);
+      this.finished = false;
+      this.loading = true;
+      this.postsList = [];
+      this.pageIndex = 1;
+      this.getPostsList(this.tabsList[this.active].id);
+    },
+  },
+
+  // 监听active
+  watch: {
+    active(newVal) {
+      this.postsList = [];
+      this.pageIndex = 1;
+      this.finished = false;
+      this.loading = true;
+      this.getPostsList(this.tabsList[newVal].id);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
+/deep/.van-tabs__nav {
+  background-color: #eee;
+}
 .homeHead {
   height: 40px;
   background-color: red;
