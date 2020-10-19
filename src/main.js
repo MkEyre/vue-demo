@@ -19,6 +19,7 @@ import {
   Tabs,
   PullRefresh,
   Sticky,
+  Icon,
 } from 'vant'
 Vue.use(Field, Toast)
 Vue.use(Cell)
@@ -32,6 +33,7 @@ Vue.use(Tab)
 Vue.use(Tabs)
 Vue.use(PullRefresh)
 Vue.use(Sticky)
+Vue.use(Icon)
 
 // 注册全局过滤器
 Vue.filter('time', (val, str) => {
@@ -47,11 +49,15 @@ import DemoHeader from './components/DemoHeader.vue'
 import DemoLogo from './components/DemoLogo.vue'
 import DemoButton from './components/DemoButton.vue'
 import DemoPost from './components/DemoPost.vue'
+import DemoComment from './components/DemoComment.vue'
+import DemoFloor from './components/DemoFloor.vue'
 
 Vue.component('demo-header', DemoHeader)
 Vue.component('demo-logo', DemoLogo)
 Vue.component('demo-button', DemoButton)
 Vue.component('demo-post', DemoPost)
+Vue.component('demo-comment', DemoComment)
+Vue.component('demo-floor', DemoFloor)
 
 //请求拦截器
 axios.interceptors.request.use(config => {

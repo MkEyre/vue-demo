@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 头部部分 -->
     <div class="deatilHeader">
       <div class="left" @click="$router.back()">
         <i class="iconfont iconjiantou2"></i>
@@ -18,6 +19,7 @@
         </div>
       </div>
     </div>
+    <!-- 详情部分 -->
     <div class="detail">
       <!-- 标题部分 -->
       <div class="title">{{ postDetail.title }}</div>
@@ -43,8 +45,35 @@
           :class="{ active: postDetail.has_like }"
           @click="like(postDetail.id)"
         >
-          <i class="iconfont icondianzan"></i><span>1</span>
+          <i class="iconfont icondianzan"></i
+          ><span>{{ postDetail.like_length }}</span>
         </div>
+      </div>
+    </div>
+    <!-- 评论部分 -->
+    <div class="comments">
+      <demo-comment
+        v-for="comment in commentsList"
+        :key="comment.id"
+        :comment="comment"
+      ></demo-comment>
+    </div>
+    <!-- 底部部分 -->
+    <div class="detailBottom">
+      <div class="input" v-if="!isShow">
+        <div class="left">
+          <input type="text" placeholder="写跟帖" @focus="focus" />
+        </div>
+        <div class="center">
+          <van-icon name="chat-o" badge="9" />
+        </div>
+        <div class="right">
+          <van-icon name="star-o" />
+        </div>
+      </div>
+      <div class="textarea" v-else>
+        <textarea placeholder="写跟帖" @blur="blur"> </textarea>
+        <div class="send">发送</div>
       </div>
     </div>
   </div>
@@ -57,6 +86,8 @@ export default {
       postDetail: {
         user: {},
       },
+      commentsList: [],
+      isShow: false,
     };
   },
   created() {
@@ -70,7 +101,14 @@ export default {
       // console.log(res);
       if (res.data.statusCode === 200) {
         this.postDetail = res.data.data;
+        this.getCommentList(this.$route.params.id);
       }
+    },
+    // 获取评论列表
+    async getCommentList(id) {
+      const res = await this.$axios.get(`/post_comment/${id}`);
+      // console.log(res);
+      this.commentsList = res.data.data;
     },
     // 取消关注
     async unUserFollows(id) {
@@ -123,6 +161,12 @@ export default {
       console.log(res);
       this.$toast.success(res.data.message);
       this.getPostDetail();
+    },
+    focus() {
+      this.isShow = true;
+    },
+    blur() {
+      this.isShow = false;
     },
   },
 };
@@ -193,6 +237,64 @@ export default {
       .iconfont {
         color: #f00;
       }
+    }
+  }
+}
+.comments {
+  border-top: 3px solid #ccc;
+  padding-bottom: 50px;
+}
+.detailBottom {
+  border-top: 2px solid #ccc;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  .input {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+
+    .center,
+    .right {
+      width: 40px;
+      font-size: 20px;
+      text-align: center;
+    }
+    .left {
+      flex: 1;
+      input {
+        width: 90%;
+        height: 30px;
+        background-color: #ddd;
+        border: none;
+        border-radius: 15px;
+        padding-left: 10px;
+      }
+    }
+  }
+  .textarea {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+
+    textarea {
+      flex: 1;
+      height: 60px;
+      border: none;
+      resize: none;
+      background-color: #ccc;
+      border-radius: 10px;
+      padding: 5px;
+      margin-right: 5px;
+    }
+    .send {
+      width: 50px;
+      height: 30px;
+      background-color: #f00;
+      text-align: center;
+      line-height: 30px;
+      border-radius: 10px;
     }
   }
 }
