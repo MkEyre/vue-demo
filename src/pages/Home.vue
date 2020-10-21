@@ -11,7 +11,7 @@
     </div>
     <!-- tab栏右侧小三角部分 -->
     <van-sticky z-index="999">
-      <div class="trigle" @click="unknown">
+      <div class="trigle" @click="$router.push('/tabsList')">
         <i class="iconfont iconjiantou1"></i>
       </div>
     </van-sticky>
@@ -104,10 +104,6 @@ export default {
       this.postsList = [];
       this.pageIndex = 1;
       this.getPostsList(this.tabsList[this.active].id);
-    },
-    // 点击小三角触发的事件
-    unknown() {
-      console.log("还不知道跳转到哪里");
     },
     // 点击我的触发的事件
     hasLogin() {

@@ -10,6 +10,7 @@ import Comments from '../pages/Comments.vue'
 import MyStar from '../pages/MyStar.vue'
 import Home from '../pages/Home.vue'
 import Detail from '../pages/Detail.vue'
+import TabsList from '../pages/TabsList.vue'
 
 const router = new VueRouter({
   routes: [
@@ -22,7 +23,8 @@ const router = new VueRouter({
     { path: '/comments', name: '/comments', component: Comments },
     { path: '/my-star', name: '/my-star', component: MyStar },
     { path: '/home', name: '/home', component: Home },
-    { path: '/detail/:id', name: '/detail/:id', component: Detail },
+    { path: '/detail/:id', component: Detail },
+    { path: '/tabsList', component: TabsList },
   ],
 })
 // 设置全局前置守卫
