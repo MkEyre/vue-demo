@@ -8,7 +8,7 @@
           <span>{{ parent.user.nickname }}</span>
         </div>
         <div class="center">{{ parent.create_date }}</div>
-        <div class="right">回复</div>
+        <div class="right" @click="reply">回复</div>
       </div>
       <div class="content">{{ parent.content }}</div>
     </div>
@@ -25,6 +25,9 @@ export default {
       } else {
         return num;
       }
+    },
+    reply() {
+      this.$bus.$emit("reply", this.parent.id, this.parent.user.nickname);
     },
   },
 };

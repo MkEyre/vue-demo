@@ -35,6 +35,10 @@ Vue.use(PullRefresh)
 Vue.use(Sticky)
 Vue.use(Icon)
 
+// 全局的事件总线
+const bus = new Vue()
+Vue.prototype.$bus = bus
+
 // 注册全局过滤器
 Vue.filter('time', (val, str) => {
   return moment(val).format(str)

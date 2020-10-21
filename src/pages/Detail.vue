@@ -1,21 +1,23 @@
 <template>
   <div>
     <!-- 头部部分 -->
-    <div class="deatilHeader">
-      <div class="left" @click="$router.back()">
-        <i class="iconfont iconjiantou2"></i>
-      </div>
-      <div class="center"><i class="iconfont iconnew"></i></div>
-      <div class="right">
-        <div
-          class="follow"
-          v-if="postDetail.has_follow"
-          @click="unUserFollows(postDetail.user.id)"
-        >
-          已关注
+    <div class="head">
+      <div class="deatilHeader">
+        <div class="left" @click="$router.back()">
+          <i class="iconfont iconjiantou2"></i>
         </div>
-        <div class="unfollow" v-else @click="userFollows(postDetail.user.id)">
-          关注
+        <div class="center"><i class="iconfont iconnew"></i></div>
+        <div class="right">
+          <div
+            class="follow"
+            v-if="postDetail.has_follow"
+            @click="unUserFollows(postDetail.user.id)"
+          >
+            已关注
+          </div>
+          <div class="unfollow" v-else @click="userFollows(postDetail.user.id)">
+            关注
+          </div>
         </div>
       </div>
     </div>
@@ -50,6 +52,7 @@
         </div>
       </div>
     </div>
+    <div class="view" ref="view"></div>
     <!-- 评论部分 -->
     <div class="comments">
       <demo-comment
@@ -62,18 +65,28 @@
     <div class="detailBottom">
       <div class="input" v-if="!isShow">
         <div class="left">
-          <input type="text" placeholder="写跟帖" @focus="focus" />
+          <input type="text" placeholder="写跟帖" @focus="focus" ref="input" />
         </div>
         <div class="center">
-          <van-icon name="chat-o" badge="9" />
+          <van-icon name="chat-o" :badge="postDetail.comment_length" />
         </div>
         <div class="right">
-          <van-icon name="star-o" />
+          <van-icon
+            name="star-o"
+            :class="{ active: postDetail.has_star }"
+            @click="hasStar"
+          />
         </div>
       </div>
       <div class="textarea" v-else>
-        <textarea placeholder="写跟帖" @blur="blur"> </textarea>
-        <div class="send">发送</div>
+        <textarea
+          :placeholder="replyName ? '回复: ' + replyName : '请发表您的评论'"
+          @blur="blur"
+          ref="textarea"
+          v-model="content"
+        >
+        </textarea>
+        <div class="send" @mousedown="send">发送</div>
       </div>
     </div>
   </div>
@@ -88,11 +101,23 @@ export default {
       },
       commentsList: [],
       isShow: false,
+      replyId: "",
+      replyName: "",
+      content: "",
     };
   },
   created() {
     // console.log(this.$route.params.id);
     this.getPostDetail();
+    this.getCommentList();
+    this.$bus.$on("reply", async (replyId, replyName) => {
+      // console.log(replyId, replyName);
+      this.replyId = replyId;
+      this.replyName = replyName;
+      this.isShow = true;
+      await this.$nextTick();
+      this.$refs.textarea && this.$refs.textarea.focus();
+    });
   },
   methods: {
     //获取文章详情
@@ -101,12 +126,13 @@ export default {
       // console.log(res);
       if (res.data.statusCode === 200) {
         this.postDetail = res.data.data;
-        this.getCommentList(this.$route.params.id);
       }
     },
     // 获取评论列表
-    async getCommentList(id) {
-      const res = await this.$axios.get(`/post_comment/${id}`);
+    async getCommentList() {
+      const res = await this.$axios.get(
+        `/post_comment/${this.$route.params.id}`
+      );
       // console.log(res);
       this.commentsList = res.data.data;
     },
@@ -158,48 +184,89 @@ export default {
         return;
       }
       const res = await this.$axios.get(`/post_like/${id}`);
-      console.log(res);
+      // console.log(res);
       this.$toast.success(res.data.message);
       this.getPostDetail();
     },
-    focus() {
+    async focus() {
       this.isShow = true;
+      await this.$nextTick();
+      this.$refs.textarea.focus();
     },
     blur() {
       this.isShow = false;
+      // 如果内容为空，失焦的时候清掉name和id
+      if (!this.content) {
+        this.replyName = "";
+        this.replyId = "";
+      }
+    },
+    // 鼠标按下触发的事件
+    async send() {
+      if (!this.content) {
+        return;
+      }
+      const res = await this.$axios.post(
+        `/post_comment/${this.$route.params.id}`,
+        { content: this.content, parent_id: this.replyId }
+      );
+      console.log(res);
+      if (res.data.statusCode === 200) {
+        this.$toast.success(res.data.message);
+        this.getCommentList();
+        this.content = "";
+        this.$refs.view.scrollIntoView();
+      }
+    },
+    // 收藏文章部分
+    async hasStar() {
+      const res = await this.$axios.get(`/post_star/${this.$route.params.id}`);
+      console.log(res);
+      if (res.data.statusCode === 200) {
+        this.$toast.success(res.data.message);
+        this.getPostDetail();
+      }
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.deatilHeader {
+.head {
   height: 40px;
-  border-bottom: 1px solid #ccc;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-  .left {
-    width: 30px;
-    text-align: center;
-  }
-  .center {
-    flex: 1;
-
-    .iconfont {
-      font-size: 50px;
-    }
-  }
-  .right {
-    width: 80px;
-    .follow,
-    .unfollow {
-      width: 60px;
-      height: 20px;
-      line-height: 20px;
+  .deatilHeader {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    background-color: #fff;
+    z-index: 999;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    .left {
+      width: 30px;
       text-align: center;
-      border: 1px solid #ccc;
-      border-radius: 10px;
+    }
+    .center {
+      flex: 1;
+
+      .iconfont {
+        font-size: 50px;
+      }
+    }
+    .right {
+      width: 80px;
+      .follow,
+      .unfollow {
+        width: 60px;
+        height: 20px;
+        line-height: 20px;
+        text-align: center;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+      }
     }
   }
 }
@@ -260,7 +327,11 @@ export default {
       width: 40px;
       font-size: 20px;
       text-align: center;
+      .active {
+        color: #f00;
+      }
     }
+
     .left {
       flex: 1;
       input {

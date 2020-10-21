@@ -8,7 +8,7 @@
         <p>{{ comment.user.nickname }}</p>
         <p class="date">{{ comment.create_date }}</p>
       </div>
-      <div class="right">回复</div>
+      <div class="right" @click="reply">回复</div>
     </div>
     <demo-floor v-if="comment.parent" :parent="comment.parent"></demo-floor>
     <div class="content">{{ comment.content }}</div>
@@ -18,6 +18,11 @@
 <script>
 export default {
   props: ["comment"],
+  methods: {
+    reply() {
+      this.$bus.$emit("reply", this.comment.id, this.comment.user.nickname);
+    },
+  },
 };
 </script>
 
