@@ -2,7 +2,7 @@
   <div>
     <!-- 头部部分 -->
     <div class="head">
-      <div class="deatilHeader">
+      <div class="detailHeader">
         <div class="left" @click="$router.back()">
           <i class="iconfont iconjiantou2"></i>
         </div>
@@ -234,7 +234,7 @@ export default {
 <style lang="less" scoped>
 .head {
   height: 40px;
-  .deatilHeader {
+  .detailHeader {
     position: fixed;
     top: 0;
     width: 100%;
